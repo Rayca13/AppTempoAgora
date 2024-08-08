@@ -6,16 +6,12 @@ namespace AppTempoAgora
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
 
+        CancellationTokenSource _cancelTokenSource;
+        bool _isCheckingLocation;
 
-        public partial class MainPage : ContentPage 
-        {
-            CancellationTokenSource _cancelTokenSource;
-            bool _isCheckingLocation;
-
-            string? cidade;
-        }
+        string? cidade;
+        
         public MainPage()
         {
             InitializeComponent();
@@ -23,18 +19,7 @@ namespace AppTempoAgora
 
         // https://learn.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key
         // https://stackoverflow.com/questions/75174113/maui-windows-platform-cant-access-location
-
-        private void OnCounterClicked(object sender, EventArgs e)
-        {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
-        }
+      
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
@@ -82,8 +67,7 @@ namespace AppTempoAgora
 
         }
 
-        private async Task<string> GetGeocodeReverseData (
-            double latitude = 47.673988, double longitude = -122.121513)
+        private async Task<string> GetGeocodeReverseData (double latitude = 47.673988, double longitude = -122.121513)
         {
             IEnumerable<Placemark> placemarks = await Geocoding.Default.GetPlacemarksAsync(
                     latitude, longitude);
@@ -113,15 +97,56 @@ namespace AppTempoAgora
             return "Nada";
         }
 
-        private void Button_Clicked_1(object sender, EventArgs e)
+        private async void Button_Clicked_1(object sender, EventArgs e)
         {
+            // lat = longitude = 37.421998333333335
+            //long = -122.084
+
+            double latitude = Convert.ToDouble(lbl_latitude.Text);
+            double longitude = Convert.ToDouble(lbl_longitude.Text);
+
+            lbl_reverso.Text = await GetGeocodeReverseData(latitude, longitude);
 
         }
 
-        private void Button_Clicked_2(object sender, EventArgs e)
+        private async void Button_Clicked_2(object sender, EventArgs e)
         {
+            try
+            {
+                if (!String.IsNullOrEmpty(cidade))
+                {
+                    Tempo? previsao = await DataService.GetPrevisaoDoTempo(cidade);
 
+                    string dados_previsao = "";
+
+                    if (previsao != null)
+                    {
+                        dados_previsao = $"Humidade: {previsao.Humidity} \n" +
+                                         $"Nascer do Sol: {previsao.Sunrise} \n " +
+                                         $"Pôr do Sol: {previsao.Sunset} \n" +
+                                         $"Temperatura: {previsao.Temperature} \n" +
+                                         $"Titulo: {previsao.Title} \n" +
+                                         $"Visibilidade: {previsao.Visibility} \n" +
+                                         $"Vento: {previsao.Wind} \n" +
+                                         $"Previsão: {previsao.Weather} \n" +
+                                         $"Descrição: {previsao.WeatherDescription}";
+                    }
+                    else
+                    {
+                        dados_previsao = $"Sem dados, previsão nula.";
+                    }
+
+                    Debug.WriteLine("-------------------------------------------");
+                    Debug.WriteLine(dados_previsao);
+                    Debug.WriteLine("-------------------------------------------");
+
+                    lbl_previsao.Text = dados_previsao;
+                }           
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro ", ex.Message, "OK");
+            }
         }
     }
-
-}
+}// feito

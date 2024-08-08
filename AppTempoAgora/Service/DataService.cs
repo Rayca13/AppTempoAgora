@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using AppTempoAgora;
-using AppTempoAgora.Models;
+﻿using AppTempoAgora.Models;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Foundation;
 
 namespace AppTempoAgora.Service
 {
@@ -26,29 +26,38 @@ namespace AppTempoAgora.Service
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string Json = response.Content.ReadAsStringAsync().Result;
+                    string json = response.Content.ReadAsStringAsync().Result;
 
-                    var rascunho = JSObject.Parse(Json);
+                    Debug.WriteLine("----------------------------");
+                    Debug.WriteLine(json);
+                    Debug.WriteLine("----------------------------");
 
-                    DateTime time = DateTime(1970, 1, 1, 0, 0, 0, 0);
+                    var rascunho = JObject.Parse(json);
+
+                    Debug.WriteLine("------------------------------------");
+                    Debug.WriteLine(rascunho);
+                    Debug.WriteLine("------------------------------------");
+
+
+                    DateTime time = new DateTime(1970, 1, 1, 0, 0, 0, 0);
                     DateTime sunrise = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
                     DateTime sunset = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
 
                     tempo = new();
                     {
-                        Humidity = (string)rascunho["main"]["humidity"],
-                        Temperature = (string)rascunho["main"]["temp"],
-                        Title = (string)rascunho["name"],
-                        Visibility = (string)rascunho["visibility"],
-                        Wind = (string)rascunho["wind"]["speed"],
-                        Sunrise = sunrise.ToString(),
-                        Sunset = sunset.ToString(),
-                        Weather = (string)rascunho["weather"][0]["main"],
-                        WeatherDescription = (string)rascunho["weather"][0]["description"],
+                            Humidity = (string)rascunho["main"]["humidity"],
+                            Temperature = (string)rascunho["main"]["tempo"],
+                            Title = (string )rascunho["name"],
+                            Visibility = (string )rascunho["visibility"],
+                            Wind = (string)rascunho["wind"]["speed"],
+                            Sunrise = sunrise.ToString(),
+                            Sunset = sunset.ToString(),
+                            Weather = (string)rascunho["weather"][0]["main"]
+                            WeatherDescription = (string)rascunho["weather"][0]["description"],
                     };
                 }
             }
             return tempo;
         }
     } 
-}
+} //feito
