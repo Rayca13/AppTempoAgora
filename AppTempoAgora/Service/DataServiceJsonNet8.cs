@@ -15,21 +15,24 @@ namespace AppTempoAgora.Service
 
             Tempo? tempo = null;
 
-            using (HttpClient client = new HttpClient());
-
-            HttpResponseMessage response = await client.GetAsync(url);
-
-            if (response.IsSuccessStatusCode)
+            using (HttpClient client = new HttpClient())
             {
-                string json = response.Content.ReadAsStringAsync().Result;
+                HttpResponseMessage response = await client.GetAsync(url);
 
-                Debug.WriteLine("--------------------------------------------------------------------");
-                Debug.WriteLine(json);
-                Debug.WriteLine("--------------------------------------------------------------------");
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = response.Content.ReadAsStringAsync().Result;
 
-                tempo = JsonSerializer.Deserialize<Tempo>(json);
+                    Debug.WriteLine("--------------------------------------------------------------------");
+                    Debug.WriteLine(json);
+                    Debug.WriteLine("--------------------------------------------------------------------");
+
+                    tempo = JsonSerializer.Deserialize<Tempo>(json);
+                }
             }
+
+            return tempo;
 
         }
     }
-} // feito
+} 

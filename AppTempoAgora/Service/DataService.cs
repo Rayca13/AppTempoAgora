@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Foundation;
 
 namespace AppTempoAgora.Service
 {
@@ -43,7 +42,7 @@ namespace AppTempoAgora.Service
                     DateTime sunrise = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
                     DateTime sunset = time.AddSeconds((double)rascunho["sys"]["sunrise"]).ToLocalTime();
 
-                    tempo = new();
+                    tempo = new()
                     {
                             Humidity = (string)rascunho["main"]["humidity"],
                             Temperature = (string)rascunho["main"]["tempo"],
@@ -52,7 +51,7 @@ namespace AppTempoAgora.Service
                             Wind = (string)rascunho["wind"]["speed"],
                             Sunrise = sunrise.ToString(),
                             Sunset = sunset.ToString(),
-                            Weather = (string)rascunho["weather"][0]["main"]
+                            Weather = (string)rascunho["weather"][0]["main"],
                             WeatherDescription = (string)rascunho["weather"][0]["description"],
                     };
                 }
@@ -60,4 +59,4 @@ namespace AppTempoAgora.Service
             return tempo;
         }
     } 
-} //feito
+} 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppTempoAgora.Models
 {
-    internal class Tempo
+    public class Tempo
     {
         public string? Title { get; set; }
         public string? Temperature { get; set; }
